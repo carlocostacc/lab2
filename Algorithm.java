@@ -15,4 +15,6 @@ public interface Algorithm
      * Selects the next task using the appropriate scheduling algorithm
      */
     public abstract Task pickNextTask();
+
+    public abstract void Average_Times();
 }

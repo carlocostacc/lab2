@@ -1,90 +1,70 @@
 import java.util.*;
+import java.util.Collections;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Priority implements Algorithm {
     List<Task> queue = new ArrayList<Task>();
-    List<Task> arr = new ArrayList<Task>();
+    
 
-    public Priority(List<Task> priority, List<Task> array){
-        queue = priority; 
-        arr = array;  
+    public Priority(List<Task> priority){
+        queue = priority;  
     }
     public void schedule(){ 
         Integer i,j;
         Integer n;
         n = queue.size();
+        Write_To_File("Priority algrithm");
         for (i = 0; i < n - 1; i++){
             Integer max_idx = i;
             for (j = i + 1; j < n; j++){
-                if(queue.get(j).getTid() > queue.get(max_idx).getTid()){
+                if(queue.get(j).getPriority() > queue.get(max_idx).getPriority()){
                     max_idx = j;
                 }
             }
-            replace_tagets(i, max_idx);
-        }
-    }
-    public void replace_tagets( Integer n, Integer m){
-        Integer size =  queue.size();
-        Integer index = n;
-        Integer index2 = m;
-        Task temp_i = new Task(null, 0, 0);
-        Task temp_j = new Task(null, 0, 0);
-        List<Task> temp_list = new ArrayList<Task>();
-         
-        for (int i = 0; i < size; i++) { // queue list to temp list 
-            if (i == index) {
-                temp_i = queue.remove(0);
-                temp_list.add(temp_i);
-            } 
-            if (i == index2){
-                temp_j = queue.remove(0);
-                temp_list.add(temp_j);
-            }
-            else {
-                temp_list.add(queue.remove(0));
-            }
-        }
-
-        for (int i = 0; i < size; i++) {  // temp list to queue list
-            if (i == index) {
-                queue.add(temp_j);
-            } 
-            if (i == index2){
-                queue.add(temp_i);
-            }
-            else {
-                queue.add(temp_list.remove(0));
-            }
+            Collections.swap(queue, i, max_idx);
+            Write_To_File("will run task: " + queue.get(i).getName());
+            Write_To_File("tid: " + queue.get(i).getTid());
+            Write_To_File("priority: " + queue.get(i).getPriority());
+            Write_To_File("burst: " + queue.get(i).getBurst());
         }
     }
     
+    public void Average_Times(){
+        Integer i;
+        Integer n = queue.size();
+        double final_time = 0;
+        double turnaruondtime = 0;
+
+        for (i = 0; i < n; i++){
+            final_time += queue.get(i).getBurst();
+            turnaruondtime += final_time;
+
+        }
+        Write_To_File("the average turnaround time is: " + turnaruondtime/n);
+        Write_To_File("the average wait time time is: " + (turnaruondtime - final_time)/n);
+
+
+    }
+
     public Task pickNextTask(){
         Task task = new Task(null, 0, 0);
         return task;
     }
+    public void Write_To_File(String string){
+
+        try {
+            FileWriter filewriter = new FileWriter("run.txt", true);
+            PrintWriter pw = new PrintWriter(filewriter);
+            System.out.println(" ");
+            pw.println(string);
+            pw.close();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+    
 
 }
 
-// class PRIO
-// {
-
-//     void priority_sort(int arr[], int priority[], int n) {
-//         int i, j, temp, temp_priority;
-//         for (i = 0; i < n - 1; i++) {
-//             int max_idx = i;
-//             for (j = i + 1; j < n; j++) {
-//                 if (priority[j] > priority[max_idx]) {
-//                     max_idx = j;
-//                 }
-//             }
-
-//             temp = arr[i];
-//             arr[i] = arr[max_idx];
-//             arr[max_idx] = temp;
-
-//             temp_priority = priority[i];
-//             priority[i] = priority[max_idx];
-//             priority[max_idx] = temp_priority;
-
-//         }
-//     }
-// };

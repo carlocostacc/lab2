@@ -1,8 +1,12 @@
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+
 
 public class SJF implements Algorithm {
     List<Task> queue = new ArrayList<Task>();
-
     public SJF(List<Task> queue_list){
         queue = queue_list;   
     }
@@ -10,54 +14,55 @@ public class SJF implements Algorithm {
         Integer i,j;
         Integer n;
         n = queue.size();
-        for (i = 0; i < n - 1; i++){
+        Write_To_File("SJF algorithm");
+        for (i = 0; i < n ; i++){
             Integer min_idx = i;
-            for (j = i + 1; j < n; j++){
-                if(queue.get(min_idx).getTid() < queue.get(j).getTid()){
+            for (j = i + 1; j < n ; j++){
+                if(queue.get(min_idx).getBurst() > queue.get(j).getBurst()){
                     min_idx = j;
                 }
             }
-            replace_tagets(i, min_idx);
+            Collections.swap(queue, i , min_idx);
+            Write_To_File("will run task: " + queue.get(i).getName());
+            Write_To_File("tid: " + queue.get(i).getTid());
+            Write_To_File("priority: " + queue.get(i).getPriority());
+            Write_To_File("burst: " + queue.get(i).getBurst());
         }
-    }
-    public void replace_tagets( Integer n, Integer m){
-        Integer size =  queue.size();
-        Integer index = n;
-        Integer index2 = m;
-        Task temp_i = new Task(null, 0, 0);
-        Task temp_j = new Task(null, 0, 0);
-        List<Task> temp_list = new ArrayList<Task>();
+        Average_Times();
         
-        
-        for (int i = 0; i < size; i++) { // queue list to temp list 
-            if (i == index) {
-                temp_i = queue.remove(0);
-                temp_list.add(temp_i);
-            } 
-            if (i == index2){
-                temp_j = queue.remove(0);
-                temp_list.add(temp_j);
-            }
-            else {
-                temp_list.add(queue.remove(0));
-            }
-        }
-
-        for (int i = 0; i < size; i++) {  // temp list to queue list
-            if (i == index) {
-                queue.add(temp_j);
-            } 
-            if (i == index2){
-                queue.add(temp_i);
-            }
-            else {
-                queue.add(temp_list.remove(0));
-            }
-        }
-       
-
     }
     
+    public void Write_To_File(String string){
+
+        try {
+            FileWriter filewriter = new FileWriter("run.txt", true);
+            PrintWriter pw = new PrintWriter(filewriter);
+            System.out.println(" ");
+            pw.println(string);
+            pw.close();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+        }
+        
+    public void Average_Times(){
+        Integer i;
+        Integer n = queue.size();
+        double final_time = 0;
+        double turnaruondtime = 0;
+
+        for (i = 0; i < n; i++){
+            final_time += queue.get(i).getBurst();
+            turnaruondtime += final_time;
+
+        }
+
+        Write_To_File("the average turnaround time is: " + turnaruondtime/n);
+        Write_To_File("the average wait time time is: " + (turnaruondtime - final_time)/n);
+
+
+    }
+
     public Task pickNextTask(){
         Task task = new Task(null, 0, 0);
         return task;

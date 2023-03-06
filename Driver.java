@@ -53,17 +53,21 @@ public class Driver
                 scheduler = new Priority(queue);
                 break;
             case "RR":
-                scheduler = new RR(queue);
+                scheduler = new RR(queue, 10);
                 break;
-            case "PRI-RR":
-                scheduler = new PriorityRR(queue);
+            case "FAIRE SHARE":
+                
                 break;
             default:
                 System.err.println("Invalid algorithm");
                 System.exit(0);
+
         }
 
         // start the scheduler
         scheduler.schedule();
+        
     }
 }
+
+
