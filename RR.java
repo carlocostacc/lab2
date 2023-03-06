@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.Collections;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,43 +6,70 @@ import java.io.PrintWriter;
 public class RR implements Algorithm {
     List<Task> queue = new ArrayList<Task>();
     Integer quantum;
+    List <Integer> wt;
+    List <Integer> bt;
 
     public RR(List<Task> queue_list, Integer quant){
         queue = queue_list;   
         quantum = quant;
+        wt = new ArrayList<Integer>(queue.size());
+        bt = new ArrayList<Integer>(queue.size());
     }
     public void schedule(){ 
         Integer i,j;
         Integer n;
         n = queue.size();
+        Integer time = 0 ;
+        for(int y = 0; y < n; y++){
+            wt.add(0);
+        }
+        for(int y = 0; y < n; y++){
+            bt.add(queue.get(y).getBurst());
+        }
         Write_To_File("Round robin algorithm");
-        for (i = 0; i < n - 1; i++){
-            for (j = i + 1; j < n; j++){
-                if(queue.get(i).getTid() > queue.get(j).getTid()){
-                    Collections.swap(queue,i, j);
-                    
-                }
-            }
-            
-        }
-        Integer time = 0;
-        while (true){
-            Integer flag = 0;
-            for(i = 0; i<n; i++){
-                if (queue.get(i).getBurst() != -1){
-                    flag = 1;
-                    if(queue.get(i).getBurst() <= quantum){
-                        time += queue.get(i).getBurst();
-                        System.out.println(i);
-                        queue.get(i).setBurst(-1);
-                        Write_To_File("will run task: " + queue.get(i).getName());
-                        Write_To_File("tid: " + queue.get(i).getTid());
-                        Write_To_File("priority: " + queue.get(i).getPriority());
-                        Write_To_File("burst: " + queue.get(i).getBurst());
-                    }
-                    else{
+        while(true)
+        {
+            boolean done = true;
+      
+            // Traverse all processes one by one repeatedly
+            for (i = 0 ; i < n; i++)
+            {
+                // If burst time of a process is greater than 0
+                // then only need to process further
+                if (queue.get(i).getBurst() > 0)
+                {
+                    done = false; // There is a pending process
+      
+                    if (queue.get(i).getBurst() > quantum)
+                    {
+                        // Increase the value of time i.e. shows
+                        // how much time a process has been processed
                         time += quantum;
-                        queue.get(i).setBurst(queue.get(i).getBurst()-quantum);
+      
+                        // Decrease the burst_time of current process
+                        // by quantum
+                        queue.get(i).setBurst(queue.get(i).getBurst() - quantum);
+                        Write_To_File("will run task: " + queue.get(i).getName());
+                        Write_To_File("tid: " + queue.get(i).getTid());
+                        Write_To_File("priority: " + queue.get(i).getPriority());
+                        Write_To_File("burst: " + queue.get(i).getBurst());
+                    }
+      
+                    // If burst time is smaller than or equal to
+                    // quantum. Last cycle for this process
+                    else
+                    {
+                        // Increase the value of time i.e. shows
+                        // how much time a process has been processed
+                        time = time + queue.get(i).getBurst();
+      
+                        // Waiting time is current time minus time
+                        // used by this process
+                        wt.set(i, time - queue.get(i).getBurst());
+      
+                        // As the process gets fully executed
+                        // make its remaining burst time = 0
+                        queue.get(i).setBurst(0);
                         Write_To_File("will run task: " + queue.get(i).getName());
                         Write_To_File("tid: " + queue.get(i).getTid());
                         Write_To_File("priority: " + queue.get(i).getPriority());
@@ -51,41 +77,28 @@ public class RR implements Algorithm {
                     }
                 }
             }
-            if (flag == 0){
-                break;
-            }
+      
+            // If all processes are done
+            if (done == true)
+              break;
         }
+        System.out.println(wt);
+        Average_Times();
     }
     public void Average_Times(){
         Integer i;
         Integer n = queue.size();
-        Integer final_time = 0;
-        Integer turnaruondtime = 0;
-        Integer remaining_quantum = 0;
+        double total_wait_time = 0;
+        double total_burst_time = 0;
         
 
         for (i = 0; i < n ; i++){
-            if(i < n - 2){
-                if(queue.get(i).getPriority() != queue.get(i + 1).getPriority()){
-                    if(queue.get(i).getBurst() - quantum < 0 && queue.get(i).getBurst() != 0){
-                        if(remaining_quantum == 0){
-                            queue.get(i).setBurst(0);
-                            remaining_quantum =quantum- queue.get(i).getBurst();
-                            i -= 1;
-                            break;
-                    }
-                    }
-                    if(queue.get(i).getBurst() - quantum > 0){
-                        queue.get(i).setBurst(queue.get(i).getBurst() - quantum);
-                        break;
-                    }
-                    if(remaining_quantum > 0)
-                }
-            }
+            total_wait_time = total_wait_time + wt.get(i);
+            total_burst_time += bt.get(i);
 
         }
-        System.out.println("the average turnaround time is: " + turnaruondtime/n);
-        System.out.println("the average wait time time is: " + (turnaruondtime - final_time)/n);
+        Write_To_File("the average turnaround time is: " + (total_burst_time + total_wait_time)/n);
+        Write_To_File("the average wait time time is: " + (total_wait_time)/n);
 
 
     }

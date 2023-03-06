@@ -1,0 +1,29 @@
+Round fair share
+will run task: T1
+tid: 0
+priority: 4
+burst: 19
+will run task: T2
+tid: 1
+priority: 3
+burst: 24
+will run task: T3
+tid: 2
+priority: 3
+burst: 24
+will run task: T4
+tid: 3
+priority: 5
+burst: 14
+will run task: T5
+tid: 4
+priority: 5
+burst: 19
+will run task: T6
+tid: 5
+priority: 1
+burst: 9
+will run task: T7
+tid: 6
+priority: 3
+burst: 29

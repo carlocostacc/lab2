@@ -55,8 +55,8 @@ public class Driver
             case "RR":
                 scheduler = new RR(queue, 10);
                 break;
-            case "FAIRE SHARE":
-                
+            case "FAIR-SHARE":
+                scheduler = new FairShare(queue, 10);
                 break;
             default:
                 System.err.println("Invalid algorithm");
