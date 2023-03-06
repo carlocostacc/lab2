@@ -16,7 +16,7 @@ public class RR implements Algorithm {
         bt = new ArrayList<Integer>(queue.size());
     }
     public void schedule(){ 
-        Integer i,j;
+        Integer i;
         Integer n;
         n = queue.size();
         Integer time = 0 ;

@@ -10,7 +10,7 @@ public class FCFS implements Algorithm{
         queue = queue_list;   
     }
     public void schedule(){ 
-        Integer i,j;
+        Integer i;
         Integer n;
         n = queue.size();
         Write_To_File("FCFS algorithm");

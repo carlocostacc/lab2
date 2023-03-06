@@ -2,7 +2,6 @@ import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 
 public class FairShare implements Algorithm {
     List<Task> queue = new ArrayList<Task>();
